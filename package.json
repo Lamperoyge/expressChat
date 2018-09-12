@@ -15,6 +15,7 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
+    "node-crypt": "^1.1.0",
     "pug": "2.0.0-beta11",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
