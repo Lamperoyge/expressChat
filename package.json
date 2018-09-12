@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "wb": "webpack-dev-server --config webpack.config.js --open --hot"
+    "wb": "webpack-dev-server --config webpack.config.js --open --hot",
+    "init": "node client/Components/init.js"
   },
   "dependencies": {
     "babel": "^6.23.0",
@@ -14,8 +15,10 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
+    "json-loader": "^0.5.7",
     "morgan": "~1.9.0",
     "node-crypt": "^1.1.0",
+    "node-rsa": "^1.0.1",
     "pug": "2.0.0-beta11",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",

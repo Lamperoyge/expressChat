@@ -3,8 +3,8 @@
 const webpack = require('webpack');
 
 module.exports = {
-    mode: 'production',
-
+    mode: 'development',
+    // target: 'node',
     'context': __dirname + '/client',
 //    'cache': true,
     'output': {
@@ -12,6 +12,7 @@ module.exports = {
         'path': __dirname + '/public/javascripts',
     },
     'devServer': {
+        host: '0.0.0.0',
         'publicPath': "/javascripts",
         port:8080
     },
