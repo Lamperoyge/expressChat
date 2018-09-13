@@ -9,7 +9,7 @@ var usersRouter = require('./routes/users');
 
 
 const rsaWrapper = require('./client/Components/rsa-wrapper')
-const rsaWrapper = require('./client/Components/aes-wrapper')
+const aesWrapper = require('./client/Components/aes-wrapper')
 rsaWrapper.initLoadServerKeys(__dirname);
 rsaWrapper.serverExampleEncrypt();
 
@@ -33,6 +33,8 @@ app.use(function(req, res, next){
 });
 
 
+let users = []
+
 io.on('connection', (socket) => {
   let encrypted = rsaWrapper.encrypt(rsaWrapper.clientPub, 'Hello RSA message from client to server');
   socket.emit('rsa server encrypted message', encrypted);
@@ -42,7 +44,9 @@ io.on('connection', (socket) => {
     console.log('Decrypted message', '\n', rsaWrapper.decrypt(rsaWrapper.serverPrivate,data))
   })
   socket.on('sendMessage', function(data) {
-    console.log(data)
+    users.push(data.username)
+    io.emit('users', users)
+    console.log(users)
     io.emit('receiveMsg', data)
   })
   const aesKey = aesWrapper.generateKey();

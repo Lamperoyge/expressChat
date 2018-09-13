@@ -1,13 +1,54 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  position: relative;
+  /* background-color: red; */
 }
 
 a {
   color: #00B7FF;
 }
 
+.container {
+  height: 100vh;
+  position: relative;
+}
 
 .messages {
   margin-top: 20px;
+  border: 1px solid black;
+  /* max-height: 50vh; */
+  height: 75vh;
+  overflow: auto;
+  position: relative;
+}
+.message {
+width: 10%;
+padding: 15px;
+position: absolute;
+/* background-color: rgba(0,0,0,0.3); */
+font-size: 15px;
+color: rgba(0,0,0,0.7);
+}
+
+.inputs {
+  position: relative;
+}
+
+.buttons {
+  position: fixed;
+}
+
+  .btn {
+  color: #999999;
+  border: 1px solid #999999;
+  padding: 10px 15px;
+  border-radius: 50px;
+  font-weight: lighter;
+  opacity: 0.6;
+}
+.btn:hover {
+  opacity: 1;
+  text-decoration: none;
+  color: #999999;
 }
