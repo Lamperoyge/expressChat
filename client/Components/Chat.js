@@ -41,8 +41,13 @@ export default class Chat extends React.Component {
             })
         })
 
-
+        this.socket.on('user disconnected', (data) => {
+            data = this.socket
+        })
         this.socket.on('users', (data) => {
+            // this.setState.connectedUsers({
+
+            // })
             let usersJoined = this.state.connectedUsers.concat(data)
             console.log(data)
             console.log(this.state.connectedUsers)
@@ -50,9 +55,11 @@ export default class Chat extends React.Component {
                 connectedUsers: usersJoined
             })
         })
-
+        this.socket.on('user disconnected', (data) => {
+            console.log(data)
+        })
         this.socket.on('receiveMsg', (data) => {
-            
+            console.log(data)
             let joined = this.state.messages.concat(data)
             this.setState({
                 messages: joined
@@ -144,14 +151,18 @@ export default class Chat extends React.Component {
                                     )
                                 }
                             )}
-                            <ul>
+                            <div className = "users" >
                                 {this.state.connectedUsers.map(
-                                    user => {
-                                        <li>user</li>
+                                    (user,index) => {
+                                        return(
+                                            <ul key = {index} >
+                                                <li>{user}</li>
+                                            </ul>
+                                        )
                                     }
                                 )}
-                            <ul>
-                        
+                            </div>
+                        </div>
                         <span>{this.state.errMsg}</span>
                         <div className = "inputs">
                             <input type="text" placeholder="Enter your username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})}></input>
@@ -161,7 +172,7 @@ export default class Chat extends React.Component {
                         <div className="buttons">
                             {button}
                             {scrollTop}
-                        </div>
+                    </div>
                 </div>
             </div>
         )
