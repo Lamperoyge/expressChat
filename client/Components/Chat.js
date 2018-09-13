@@ -1,24 +1,13 @@
 import React from 'react';
 import io from "socket.io-client";
+import Button from './Button'
+import Input from './Input'
 
-
-class Button extends React.Component {
-    constructor() {
-        super()
-    }
-
-    render() {
-        return(
-            <div>
-                <input type="Submit" onClick={this.props.func} defaultValue={this.props.value} className="btn"></input>
-            </div>
-        )
-    }
-}
 
 export default class Chat extends React.Component {
     constructor() {
         super();
+        this.onMsgChange = this.onMsgChange.bind(this)
         this.state = {
             username: '',
             message: '',
@@ -27,50 +16,43 @@ export default class Chat extends React.Component {
             messages: [],
             pubKey: '',
             connectedUsers: []
-        
+            
         };
-        
+    }
+
+    onMsgChange(obj) {
+        console.log("from onMsg",obj)
+        this.setState({
+            username: obj.username,
+            message: obj.message
+        },this.sendMessage())
+    }
+
+    componentDidMount() {
         this.socket = io();
-
-
-        //CRYPTO
         let aeskey;
         this.socket.on('rsa server encrypted message', (data) => {
             this.setState({
                 pubKey: data
             })
         })
-
         this.socket.on('user disconnected', (data) => {
             data = this.socket
         })
         this.socket.on('users', (data) => {
-            // this.setState.connectedUsers({
-
-            // })
             let usersJoined = this.state.connectedUsers.concat(data)
-            console.log(data)
-            console.log(this.state.connectedUsers)
             this.setState({
                 connectedUsers: usersJoined
             })
         })
         this.socket.on('user disconnected', (data) => {
-            console.log(data)
         })
         this.socket.on('receiveMsg', (data) => {
-            console.log(data)
             let joined = this.state.messages.concat(data)
             this.setState({
                 messages: joined
             })
         });
-    }
-    scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        })
     }
     deleteAll = () => {
             this.setState({
@@ -78,8 +60,9 @@ export default class Chat extends React.Component {
             })
     }
     sendMessage = (ev) => {
-        ev.preventDefault;
-        
+        console.log('xxx')
+        console.log(this.state.username)
+        // ev.preventDefault;
         if(this.state.username !== '' && this.state.message !== '') {
             this.setState({
                 id: this.id + 1
@@ -164,11 +147,12 @@ export default class Chat extends React.Component {
                             </div>
                         </div>
                         <span>{this.state.errMsg}</span>
-                        <div className = "inputs">
+                        {/* <div className = "inputs">
                             <input type="text" placeholder="Enter your username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})}></input>
                             <input type="text" onKeyPress={this.handleKeyPress} placeholder="Type your message" value={this.state.message} onChange = {ev => this.setState({message: ev.target.value})}></input>
                             <input type="Submit" onClick={this.sendMessage} ></input>
-                        </div>
+                        </div> */}
+                        <Input handleClick={this.sendMessage} stateChange = {this.onMsgChange} />
                         <div className="buttons">
                             {button}
                             {scrollTop}
