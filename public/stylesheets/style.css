@@ -14,13 +14,32 @@ a {
   position: relative;
 }
 
+.subBtn {
+    position: relative !important;
+    left: 96%;
+    top: 60% !important;
+    z-index: 1000;
+    height: 8vh;
+}
+.rce-input-textarea {
+  
+  position: absolute;
+  margin: 0px;
+  width: 85%;
+  height: 7vh;
+  top: 5vh !important;
+  left: 22vh;
+
+}
+.chat-list {
+  position: fixed;
+}
+.rce-input {
+  position: absolute;
+  top: 5vh;
+  box-shadow: 2px 3px 5px 0px rgba(0,0,0,0.75);
+}
 .users {
-  width: 10%;
-
-overflow: auto;
-
-border: 1px solid black;
-
 position: absolute;
 
 right: 10%;
@@ -30,7 +49,7 @@ right: 10%;
   margin-top: 20px;
   border: 1px solid black;
   /* max-height: 50vh; */
-  height: 75vh;
+  height: 50vh;
   overflow: auto;
   position: relative;
 }
@@ -45,13 +64,17 @@ color: rgba(0,0,0,0.7);
 
 .inputs {
   position: relative;
+  margin-top: -20px;
 }
 
 .buttons {
-  position: fixed;
+  bottom: 0%;
 }
-
+  
   .btn {
+  bottom: 20%;
+  position: absolute;
+  left: 23%;
   color: #999999;
   border: 1px solid #999999;
   padding: 10px 15px;
@@ -63,4 +86,13 @@ color: rgba(0,0,0,0.7);
   opacity: 1;
   text-decoration: none;
   color: #999999;
+}
+
+.fa {
+  border: 1px solid black;
+  border-radius: 50%;
+  padding: 14px;
+  position: absolute;
+  left: 98%;
+  bottom: -11vh;
 }

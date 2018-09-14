@@ -34,7 +34,6 @@ app.use(function(req, res, next){
 
 
 let users = []
-let sockets = []
 io.on('connection', (socket) => {
   
   let encrypted = rsaWrapper.encrypt(rsaWrapper.clientPub, 'Hello RSA message from client to server');
@@ -46,16 +45,19 @@ io.on('connection', (socket) => {
   })
   let counter = 0;
   socket.on('sendMessage', function(data) {
-    if(!users.includes(data.username)) {
-      users.push(data.username)
+    user = data.username
+    if(!users.includes(user)) {
+      users.push(user)
     }
     io.emit('users', users)
     console.log(users)
     io.emit('receiveMsg', data)
   })
   socket.on('disconnect', function(data) {
-    console.log(data)
-    io.emit('user disconnected', data)
+    socket.broadcast.emit('user disconnected', user)
+    let index = users.indexOf(user)
+    users.splice(index, 1)
+    console.log(users)
   })
   const aesKey = aesWrapper.generateKey();
   let encryptedAesKey = rsaWrapper.encrypt(rsaWrapper.clientPub, (aesKey.toString('base64')));
