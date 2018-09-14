@@ -1,21 +1,12 @@
 import React from 'react';
 import io from "socket.io-client";
-
-
-class Button extends React.Component {
-    constructor() {
-        super()
-    }
-
-    render() {
-        return(
-            <div>
-                <input type="Submit" onClick={this.props.func} defaultValue={this.props.value} className="btn"></input>
-            </div>
-        )
-    }
-}
-
+import Button from './Button'
+import Input from './Input'
+import { ChatList } from 'react-chat-elements'
+import { MessageBox } from 'react-chat-elements'
+import { MessageList } from 'react-chat-elements'
+import 'react-chat-elements/dist/main.css';
+import Inp from './Input';
 export default class Chat extends React.Component {
     constructor() {
         super();
@@ -27,87 +18,88 @@ export default class Chat extends React.Component {
             messages: [],
             pubKey: '',
             connectedUsers: []
-        
+            
         };
-        
+    }
+
+    componentDidMount() {
         this.socket = io();
-
-
-        //CRYPTO
         let aeskey;
         this.socket.on('rsa server encrypted message', (data) => {
             this.setState({
                 pubKey: data
             })
         })
-
         this.socket.on('user disconnected', (data) => {
-            data = this.socket
+            console.log(data)
         })
         this.socket.on('users', (data) => {
-            // this.setState.connectedUsers({
-
-            // })
+            this.setState({
+                connectedUsers: []
+            })
             let usersJoined = this.state.connectedUsers.concat(data)
-            console.log(data)
-            console.log(this.state.connectedUsers)
             this.setState({
                 connectedUsers: usersJoined
             })
         })
         this.socket.on('user disconnected', (data) => {
-            console.log(data)
+            let index = this.state.connectedUsers.indexOf(data)
+            this.setState({
+                connectedUsers: this.connectedUsers.splice(index, 1)
+            })
         })
         this.socket.on('receiveMsg', (data) => {
-            console.log(data)
             let joined = this.state.messages.concat(data)
             this.setState({
                 messages: joined
             })
         });
     }
-    scrollToTop() {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        })
-    }
     deleteAll = () => {
             this.setState({
                 messages: []
             })
     }
-    sendMessage = (ev) => {
-        ev.preventDefault;
-        
-        if(this.state.username !== '' && this.state.message !== '') {
-            this.setState({
-                id: this.id + 1
-            })
-            this.socket.emit('sendMessage', {
-                username: this.state.username,
-                message: this.state.message,
-                id: this.id
-            })
+    sendMessage = (ev, msg) => {
+        this.setState({
+            username: msg.username,
+            message: msg.message
+        }, () => {
             
-            this.setState({
-                message: '',
-                errMsg: ''
-            })
-            
-        }
-        else {
-            this.setState({
-                errMsg: "enter your name and msg mofo"
-            })
-        }
-       const objDiv =  document.querySelector('.messages')
-    //    objDiv.scrollTo(0,objDiv.scrollHeight);
-    objDiv.scrollTop = objDiv.scrollHeight
+            console.log('xxx')
+            console.log(this.state.username)
+            // ev.preventDefault;
+            if(this.state.username !== '' && this.state.message !== '') {
+                this.setState({
+                    id: this.id + 1
+                })
+                this.socket.emit('sendMessage', {
+                    username: this.state.username,
+                    message: this.state.message,
+                    id: this.id
+                })
+                
+                this.setState({
+                    message: '',
+                    errMsg: ''
+                })
+                
+            }
+            else {
+                this.setState({
+                    errMsg: "enter your name and msg mofo"
+                })
+            }
+           const objDiv =  document.querySelector('.messages')
+        //    objDiv.scrollTo(0,objDiv.scrollHeight);
+        objDiv.scrollTop = objDiv.scrollHeight
+        })
         
     }
-    handleKeyPress = (e) => {
+    handleKeyEvent = (e) => {
+        console.log('outtz')
         if(e.key == 'Enter') {
+            console.log('hello')
             this.sendMessage(e)
         }
     }
@@ -130,12 +122,6 @@ export default class Chat extends React.Component {
 
 
     render() {
-        let button;
-        let scrollTop;
-        if(this.state.messages.length > 0) {
-            button = <Button func={this.deleteAll} value="delete all"></Button>
-            scrollTop = <Button func={this.scrollToTop} value = "scroll To Top"></Button>
-        }
         return(
             <div className = "container">
                 <div className="row" >
@@ -143,35 +129,59 @@ export default class Chat extends React.Component {
                         <div className = "messages">
                             {this.state.messages.map(
                                 (message, index) => {
-                                    return(
-                                        <div key = {index} id= {'message' + (index + 1)} className="message" style={{backgroundColor: this.divStyle(index + 1).color, right: this.divStyle(index + 1).pos, marginTop: 100 * index}}>
-                                            <p><strong>{message.username} says:  </strong></p>
-                                            <p>{message.message}</p> 
-                                        </div>
+                                    return(                                       
+                                    <div key = {index} id= {'message' + (index + 1)} className="message" style={{right: this.divStyle(index + 1).pos, marginTop: 100 * index}}>
+                                        <MessageBox
+                                            
+                                            type={'text'}
+                                            title = {message.username}
+                                            text={message.message}
+                                            data={{
+                                            uri: 'https://facebook.github.io/react/img/logo.svg',
+                                            status: {
+                                                click: false,
+                                                loading: 0,
+                                            }
+                                        }}/>
+                                    </div>
                                     )
                                 }
                             )}
+
                             <div className = "users" >
                                 {this.state.connectedUsers.map(
                                     (user,index) => {
                                         return(
-                                            <ul key = {index} >
-                                                <li>{user}</li>
-                                            </ul>
+                                            // <ul key = {index} >
+                                            //     <li>{user}</li>
+                                            // </ul>
+                                            <ChatList
+                                                className = 'chat-list'
+                                                title = {user}
+                                                dataSource={[
+                                                    {
+                                                        avatar: 'https://facebook.github.io/react/img/logo.svg',
+                                                        alt: 'Reactjs',
+                                                        title: user,
+                                                        subtitle: 'connected',
+                                                        date: '?3!#23?',
+                                                        unread: 0,
+                                                },
+                                            ]} />
                                         )
                                     }
                                 )}
                             </div>
                         </div>
                         <span>{this.state.errMsg}</span>
-                        <div className = "inputs">
+                        {/* <div className = "inputs">
                             <input type="text" placeholder="Enter your username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})}></input>
                             <input type="text" onKeyPress={this.handleKeyPress} placeholder="Type your message" value={this.state.message} onChange = {ev => this.setState({message: ev.target.value})}></input>
                             <input type="Submit" onClick={this.sendMessage} ></input>
-                        </div>
+                        </div> */}
+                        <Inp send={this.sendMessage} sendOnKey = {this.handleKeyEvent}/>
                         <div className="buttons">
-                            {button}
-                            {scrollTop}
+                        {(this.state.messages.length > 0 ? <Button func={this.deleteAll} value="delete all"></Button> : console.log('zz'))}
                     </div>
                 </div>
             </div>
